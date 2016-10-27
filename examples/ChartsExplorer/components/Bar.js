@@ -1,4 +1,4 @@
-import React, { Component, PropTypes } from 'react';
+import React, { Component } from 'react';
 import { StyleSheet } from 'react-native';
 
 import { BarChart } from 'react-native-ios-charts';
@@ -14,7 +14,9 @@ const styles = StyleSheet.create({
 
 export default class Bar extends Component {
   static displayName = 'Bar';
-
+  componentDidMount() {
+    this.refs.chart.setVisibleXRangeMaximum(2);
+  }
   render() {
     const config = {
       dataSets: [{
@@ -50,10 +52,16 @@ export default class Bar extends Component {
       valueFormatter: {
         type: 'regular',
         maximumDecimalPlaces: 0
+      },
+      viewport: {
+        left: 20,
+        top: 0,
+        right: 20,
+        bottom: 50
       }
     };
     return (
-      <BarChart config={config} style={styles.container}/>
+      <BarChart ref='chart' config={config} style={styles.container}/>
     );
   }
 }

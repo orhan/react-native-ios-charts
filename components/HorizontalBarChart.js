@@ -1,5 +1,7 @@
-import React, { Component, PropTypes } from 'react';
-import { requireNativeComponent, processColor } from 'react-native';
+import React, { Component } from 'react';
+import {
+  requireNativeComponent
+} from 'react-native';
 
 import {
   globalCommonProps,
@@ -8,18 +10,15 @@ import {
 } from '../utils/commonProps';
 
 import { processColors } from '../utils/commonColorProps';
-
-let RNHorizontalBarChart = requireNativeComponent('RNHorizontalBarChartSwift', HorizontalBarChart);
+const RNHorizontalBarChart = requireNativeComponent('RNHorizontalBarChartSwift', HorizontalBarChart);
 
 class HorizontalBarChart extends Component {
   render() {
-    let {config, ...otherProps} = this.props;
-    config = processColors(config);
-    return <RNHorizontalBarChart
-      config={JSON.stringify(config)}
-      {...otherProps}/>;
+    let { config, ...otherProps } = this.props;
+    config = JSON.stringify(processColors(config));
+    return <RNHorizontalBarChart config={config} {...otherProps} />;
   }
-};
+}
 
 HorizontalBarChart.propTypes = {
   config: React.PropTypes.shape({
@@ -38,7 +37,7 @@ HorizontalBarChart.propTypes = {
     })),
     drawValueAboveBar: React.PropTypes.bool,
     drawHighlightArrow: React.PropTypes.bool,
-    drawBarShadow: React.PropTypes.bool,
+    drawBarShadow: React.PropTypes.bool
   })
 };
 

@@ -1,4 +1,4 @@
-import React, { Component, PropTypes } from 'react';
+import React, { Component } from 'react';
 import { requireNativeComponent } from 'react-native';
 
 import {
@@ -8,18 +8,15 @@ import {
 } from '../utils/commonProps';
 
 import { processColors } from '../utils/commonColorProps';
-
-let RNCombinedChart = requireNativeComponent('RNCombinedChartSwift', CombinedChart);
+const RNCombinedChart = requireNativeComponent('RNCombinedChartSwift', CombinedChart);
 
 class CombinedChart extends Component {
   render() {
-    let {config, ...otherProps} = this.props;
-    config = processColors(config);
-    return <RNCombinedChart
-      config={JSON.stringify(config)}
-      {...otherProps}/>;
+    let { config, ...otherProps } = this.props;
+    config = JSON.stringify(processColors(config));
+    return <RNCombinedChart config={config} {...otherProps} />;
   }
-};
+}
 
 CombinedChart.propTypes = {
   config: React.PropTypes.shape({
@@ -29,7 +26,6 @@ CombinedChart.propTypes = {
       dataSets: React.PropTypes.arrayOf(React.PropTypes.shape({
         ...commonDataSetProps,
         drawCircles: React.PropTypes.bool,
-        lineWidth: React.PropTypes.number,
         circleColors: React.PropTypes.arrayOf(React.PropTypes.string),
         circleHoleColor: React.PropTypes.string,
         circleRadius: React.PropTypes.number,

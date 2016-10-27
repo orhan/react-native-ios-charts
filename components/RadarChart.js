@@ -1,5 +1,7 @@
-import React, { Component, PropTypes } from 'react';
-import { requireNativeComponent, processColor } from 'react-native';
+import React, { Component } from 'react';
+import {
+  requireNativeComponent
+} from 'react-native';
 
 import {
   globalCommonProps,
@@ -8,18 +10,15 @@ import {
 } from '../utils/commonProps';
 
 import { processColors } from '../utils/commonColorProps';
-
-let RNRadarChart = requireNativeComponent('RNRadarChartSwift', RadarChart);
+const RNRadarChart = requireNativeComponent('RNRadarChartSwift', RadarChart);
 
 class RadarChart extends Component {
   render() {
-    let {config, ...otherProps} = this.props;
-    config = processColors(config);
-    return <RNRadarChart
-      config={JSON.stringify(config)}
-      {...otherProps}/>;
+    let { config, ...otherProps } = this.props;
+    config = JSON.stringify(processColors(config));
+    return <RNRadarChart config={config} {...otherProps} />;
   }
-};
+}
 
 RadarChart.propTypes = {
   config: React.PropTypes.shape({

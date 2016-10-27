@@ -1,5 +1,9 @@
-import React, { Component, PropTypes } from 'react';
-import { requireNativeComponent } from 'react-native';
+import React, { Component } from 'react';
+import {
+  requireNativeComponent,
+  NativeModules,
+  findNodeHandle
+} from 'react-native';
 
 import {
   globalCommonProps,
@@ -8,18 +12,23 @@ import {
 } from '../utils/commonProps';
 
 import { processColors } from '../utils/commonColorProps';
-
-let RNScatterChart = requireNativeComponent('RNScatterChartSwift', ScatterChart);
+const RNScatterChartManager = NativeModules.RNScatterChartSwift;
+const RNScatterChart = requireNativeComponent('RNScatterChartSwift', ScatterChart);
 
 class ScatterChart extends Component {
-  render() {
-    let {config, ...otherProps} = this.props;
-    config = processColors(config);
-    return <RNScatterChart
-      config={JSON.stringify(config)}
-      {...otherProps}/>;
+  constructor(props) {
+    super(props);
+    this.setVisibleXRangeMaximum = this.setVisibleXRangeMaximum.bind(this);
   }
-};
+  setVisibleXRangeMaximum(value) {
+    RNScatterChartManager.setVisibleXRangeMaximum(findNodeHandle(this), value);
+  }
+  render() {
+    let { config, ...otherProps } = this.props;
+    config = JSON.stringify(processColors(config));
+    return <RNScatterChart config={config} {...otherProps} />;
+  }
+}
 
 ScatterChart.propTypes = {
   config: React.PropTypes.shape({

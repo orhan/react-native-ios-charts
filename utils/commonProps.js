@@ -34,6 +34,12 @@ export const globalCommonProps = {
   infoTextFontSize: React.PropTypes.number,
   infoTextColor: React.PropTypes.string,
   drawMarkers: React.PropTypes.bool,
+  marker: React.PropTypes.shape({
+    markerColor: React.PropTypes.string.isRequired,
+    markerTextColor: React.PropTypes.string.isRequired,
+    markerFontName: React.PropTypes.string,
+    markerFontSize: React.PropTypes.number,
+  }),
   userInteractionEnabled: React.PropTypes.bool,
   dragDecelerationEnabled: React.PropTypes.bool,
   dragDecelerationFrictionCoef: React.PropTypes.number,
@@ -277,6 +283,12 @@ export const barLineCommonProps = {
     startAtZero: React.PropTypes.bool,
     axisMinimum: React.PropTypes.number,
     axisMaximum: React.PropTypes.number
+  }),
+  viewport: React.PropTypes.shape({
+    left: React.PropTypes.number,
+    top: React.PropTypes.number,
+    right: React.PropTypes.number,
+    bottom: React.PropTypes.number
   })
 };
 

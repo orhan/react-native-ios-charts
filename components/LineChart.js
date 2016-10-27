@@ -1,5 +1,9 @@
-import React, { Component, PropTypes } from 'react';
-import { requireNativeComponent, processColor } from 'react-native';
+import React, { Component } from 'react';
+import {
+  requireNativeComponent,
+  NativeModules,
+  findNodeHandle
+} from 'react-native';
 
 import {
   globalCommonProps,
@@ -8,18 +12,23 @@ import {
 } from '../utils/commonProps';
 
 import { processColors } from '../utils/commonColorProps';
-
-let RNLineChart = requireNativeComponent('RNLineChartSwift', LineChart);
+const RNLineChartManager = NativeModules.RNLineChartSwift;
+const RNLineChart = requireNativeComponent('RNLineChartSwift', LineChart);
 
 class LineChart extends Component {
-  render() {
-    let { config, ...otherProps} = this.props;
-    config = processColors(config);
-    return <RNLineChart
-      config={JSON.stringify(config)}
-      {...otherProps}/>;
+  constructor(props) {
+    super(props);
+    this.setVisibleXRangeMaximum = this.setVisibleXRangeMaximum.bind(this);
   }
-};
+  setVisibleXRangeMaximum(value) {
+    RNLineChartManager.setVisibleXRangeMaximum(findNodeHandle(this), value);
+  }
+  render() {
+    let { config, ...otherProps } = this.props;
+    config = JSON.stringify(processColors(config));
+    return <RNLineChart config={config} {...otherProps} />;
+  }
+}
 
 LineChart.propTypes = {
   config: React.PropTypes.shape({
@@ -28,7 +37,6 @@ LineChart.propTypes = {
     dataSets: React.PropTypes.arrayOf(React.PropTypes.shape({
       ...commonDataSetProps,
       drawCircles: React.PropTypes.bool,
-      lineWidth: React.PropTypes.number,
       circleColors: React.PropTypes.arrayOf(React.PropTypes.string),
       circleHoleColor: React.PropTypes.string,
       circleRadius: React.PropTypes.number,
@@ -46,8 +54,9 @@ LineChart.propTypes = {
       highlightLineWidth: React.PropTypes.number,
       lineDashLengths: React.PropTypes.number,
       lineDashPhase: React.PropTypes.number,
-      lineWidth: React.PropTypes.number,
+      lineWidth: React.PropTypes.number
     }))
   })
 };
+
 export default LineChart;

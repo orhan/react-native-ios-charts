@@ -1,4 +1,4 @@
-import React, { Component, PropTypes } from 'react';
+import React, { Component } from 'react';
 import { StyleSheet } from 'react-native';
 
 import { LineChart } from 'react-native-ios-charts';
@@ -38,6 +38,12 @@ export default class Line extends Component {
       labels: ['Jan', 'Feb', 'Mar'],
       minOffset: 20,
       scaleYEnabled: false,
+      drawMarkers: true,
+      marker: {
+        markerColor: 'grey',
+        markerTextColor: 'white',
+        markerFontSize: 14,
+      },
       legend: {
         textSize: 12
       },

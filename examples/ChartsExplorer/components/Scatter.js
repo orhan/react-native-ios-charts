@@ -1,4 +1,4 @@
-import React, { Component, PropTypes } from 'react';
+import React, { Component } from 'react';
 import { StyleSheet } from 'react-native';
 
 import { ScatterChart } from 'react-native-ios-charts';

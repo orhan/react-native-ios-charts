@@ -19,11 +19,14 @@ The aim of this library is to provide reusable React Native components that can 
 **The minimum deployment target should be set to iOS 8.0 or greater**
 
 1. Run `npm install --save react-native-ios-charts`
-2. Add all the files under node_modules/react-native-ios-charts/RNiOSCharts.
+2. Add all the files under node_modules/react-native-ios-charts/RNiOSCharts. (In Xcode: File -> Add files to "App Name")
 3. When you add the files XCode should prompt you to create a bridging header if you haven't done so already. Create it and import the `RCTViewManager.h`. It should look something like this.
 
   ```Objective-C
+  #import "RCTBridge.h"
   #import "RCTViewManager.h"
+  #import "RCTUIManager.h"
+  #import "UIView+React.h"
   ```
 3.5. You can use [CocoaPods](https://cocoapods.org) and skip steps 4-6. Just add a `Podfile` to your ios directory with the following content. Then run `pod install` and open the generated .xcworkspace from now on in xcode.
 
@@ -31,8 +34,16 @@ The aim of this library is to provide reusable React Native components that can 
   use_frameworks!
 
   target 'MyApp' do
-    pod 'SwiftyJSON', '~> 2.3'
-    pod 'Charts', '2.2.3'
+    pod 'SwiftyJSON', git: 'https://github.com/IBM-Swift/SwiftyJSON.git'
+    pod 'Charts', git: 'https://github.com/danielgindi/Charts.git'
+  end
+  
+  post_install do |installer|
+    installer.pods_project.targets.each do |target|
+      target.build_configurations.each do |config|
+        config.build_settings['SWIFT_VERSION'] = '3.0'
+      end
+    end
   end
   ```
 4. Install [SwiftyJSON](https://github.com/SwiftyJSON/SwiftyJSON) and [iOS Charts](https://github.com/danielgindi/ios-charts) libraries and add `SwiftyJSON.xcodeproj` and `Charts.xcodeproj` files to your project.

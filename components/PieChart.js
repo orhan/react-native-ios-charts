@@ -1,5 +1,7 @@
-import React, { Component, PropTypes } from 'react';
-import { requireNativeComponent, processColor } from 'react-native';
+import React, { Component } from 'react';
+import {
+  requireNativeComponent
+} from 'react-native';
 
 import {
   globalCommonProps,
@@ -8,18 +10,16 @@ import {
 } from '../utils/commonProps';
 
 import { processColors } from '../utils/commonColorProps';
+const RNPieChart = requireNativeComponent('RNPieChartSwift', PieChart);
 
-let RNPieChart = requireNativeComponent('RNPieChartSwift', PieChart);
 
 class PieChart extends Component {
   render() {
-    let {config, ...otherProps} = this.props;
-    config = processColors(config);
-    return <RNPieChart
-      config={JSON.stringify(config)}
-      {...otherProps}/>;
+    let { config, ...otherProps } = this.props;
+    config = JSON.stringify(processColors(config));
+    return <RNPieChart config={config} {...otherProps} />;
   }
-};
+}
 
 PieChart.propTypes = {
   config: React.PropTypes.shape({

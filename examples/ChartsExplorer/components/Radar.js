@@ -1,4 +1,4 @@
-import React, { Component, PropTypes } from 'react';
+import React, { Component } from 'react';
 import { StyleSheet } from 'react-native';
 
 import { RadarChart } from 'react-native-ios-charts';
@@ -33,6 +33,12 @@ export default class Radar extends Component {
         fillColor: 'red',
         drawValues: false
       }],
+      drawMarkers: true,
+      marker: {
+        markerColor: 'rgb(255, 133, 153)',
+        markerTextColor: 'white',
+        markerFontSize: 14,
+      },
       labels: ['Party A', 'Party B', 'Party C', 'Party D', 'Party E', 'Party F', 'Party G', 'Party H', 'Party I']
     };
     return (

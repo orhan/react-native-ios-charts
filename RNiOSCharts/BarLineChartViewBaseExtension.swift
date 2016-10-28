@@ -223,22 +223,22 @@ extension BarLineChartViewBase {
             if json["xAxis"]["position"].exists() {
                 switch(json["xAxis"]["position"].stringValue) {
                 case "bothSided":
-                    self.xAxis.labelPosition = ChartXAxis.LabelPosition.bothSided;
+                    self.xAxis.labelPosition = XAxis.LabelPosition.bothSided;
                     break;
                 case "bottom":
-                    self.xAxis.labelPosition = ChartXAxis.LabelPosition.bottom;
+                    self.xAxis.labelPosition = XAxis.LabelPosition.bottom;
                     break;
                 case "bottomInside":
-                    self.xAxis.labelPosition = ChartXAxis.LabelPosition.bottomInside;
+                    self.xAxis.labelPosition = XAxis.LabelPosition.bottomInside;
                     break;
                 case "top":
-                    self.xAxis.labelPosition = ChartXAxis.LabelPosition.top;
+                    self.xAxis.labelPosition = XAxis.LabelPosition.top;
                     break;
                 case "topInside":
-                    self.xAxis.labelPosition = ChartXAxis.LabelPosition.topInside;
+                    self.xAxis.labelPosition = XAxis.LabelPosition.topInside;
                     break;
                 default:
-                    self.xAxis.labelPosition = ChartXAxis.LabelPosition.bottom;
+                    self.xAxis.labelPosition = XAxis.LabelPosition.bottom;
                     break;
                 }
             }
@@ -251,9 +251,11 @@ extension BarLineChartViewBase {
                 self.xAxis.drawLimitLinesBehindDataEnabled = json["xAxis"]["drawLimitLinesBehindData"].boolValue;
             }
 
+          /*
             if json["xAxis"]["spaceBetweenLabels"].exists() {
                 self.xAxis.spaceBetweenLabels = json["xAxis"]["spaceBetweenLabels"].intValue;
             }
+           */
 
         }
 
@@ -409,13 +411,13 @@ extension BarLineChartViewBase {
             if json["leftAxis"]["position"].exists() {
                 switch(json["leftAxis"]["position"].stringValue) {
                 case "inside":
-                    self.leftAxis.labelPosition = ChartYAxis.LabelPosition.insideChart;
+                    self.leftAxis.labelPosition = YAxis.LabelPosition.insideChart;
                     break;
                 case "outside":
-                    self.leftAxis.labelPosition = ChartYAxis.LabelPosition.outsideChart;
+                    self.leftAxis.labelPosition = YAxis.LabelPosition.outsideChart;
                     break;
                 default:
-                    self.leftAxis.labelPosition = ChartYAxis.LabelPosition.outsideChart;
+                    self.leftAxis.labelPosition = YAxis.LabelPosition.outsideChart;
                     break;
                 }
             }
@@ -433,15 +435,15 @@ extension BarLineChartViewBase {
             }
 
             if json["leftAxis"]["startAtZero"].exists() {
-                self.leftAxis.startAtZeroEnabled = json["leftAxis"]["startAtZeroEnabled"].boolValue;
+              self.leftAxis.axisMinimum = json["leftAxis"]["startAtZeroEnabled"].boolValue ? 0 : 1;
             }
 
             if json["leftAxis"]["axisMinimum"].exists() {
-                self.leftAxis.axisMinValue = json["leftAxis"]["axisMinimum"].doubleValue;
+                self.leftAxis.axisMinimum = json["leftAxis"]["axisMinimum"].doubleValue;
             }
 
             if json["leftAxis"]["axisMaximum"].exists() {
-                self.leftAxis.axisMaxValue = json["leftAxis"]["axisMaximum"].doubleValue;
+                self.leftAxis.axisMaximum = json["leftAxis"]["axisMaximum"].doubleValue;
             }
 
             if json["leftAxis"]["labelCount"].exists() {
@@ -602,13 +604,13 @@ extension BarLineChartViewBase {
             if json["rightAxis"]["position"].exists() {
                 switch(json["rightAxis"]["position"].stringValue) {
                 case "inside":
-                    self.rightAxis.labelPosition = ChartYAxis.LabelPosition.insideChart;
+                    self.rightAxis.labelPosition = YAxis.LabelPosition.insideChart;
                     break;
                 case "outside":
-                    self.rightAxis.labelPosition = ChartYAxis.LabelPosition.outsideChart;
+                    self.rightAxis.labelPosition = YAxis.LabelPosition.outsideChart;
                     break;
                 default:
-                    self.rightAxis.labelPosition = ChartYAxis.LabelPosition.outsideChart;
+                    self.rightAxis.labelPosition = YAxis.LabelPosition.outsideChart;
                     break;
                 }
             }
@@ -626,15 +628,15 @@ extension BarLineChartViewBase {
             }
 
             if json["rightAxis"]["startAtZero"].exists() {
-                self.rightAxis.startAtZeroEnabled = json["rightAxis"]["startAtZeroEnabled"].boolValue;
+              self.rightAxis.axisMinimum = json["rightAxis"]["startAtZeroEnabled"].boolValue ? 0 : 1;
             }
 
             if json["rightAxis"]["axisMinimum"].exists() {
-                self.rightAxis.axisMinValue = json["rightAxis"]["axisMinimum"].doubleValue;
+                self.rightAxis.axisMinimum = json["rightAxis"]["axisMinimum"].doubleValue;
             }
 
             if json["rightAxis"]["axisMaximum"].exists() {
-                self.rightAxis.axisMaxValue = json["rightAxis"]["axisMaximum"].doubleValue;
+                self.rightAxis.axisMaximum = json["rightAxis"]["axisMaximum"].doubleValue;
             }
 
             if json["rightAxis"]["labelCount"].exists() {
@@ -653,16 +655,16 @@ extension BarLineChartViewBase {
             if json["valueFormatter"]["type"].exists() {
                 switch(json["valueFormatter"]["type"]) {
                 case "regular":
-                    self.leftAxis.valueFormatter = NumberFormatter();
-                    self.rightAxis.valueFormatter = NumberFormatter();
+                    self.leftAxis.valueFormatter = DefaultAxisValueFormatter(formatter: NumberFormatter());
+                    self.rightAxis.valueFormatter = DefaultAxisValueFormatter(formatter: NumberFormatter());
                     break;
                 case "abbreviated":
-                    self.leftAxis.valueFormatter = ABNumberFormatter(minimumDecimalPlaces: minimumDecimalPlaces, maximumDecimalPlaces: maximumDecimalPlaces);
-                    self.rightAxis.valueFormatter = ABNumberFormatter(minimumDecimalPlaces: minimumDecimalPlaces, maximumDecimalPlaces: maximumDecimalPlaces);
+                  self.leftAxis.valueFormatter = DefaultAxisValueFormatter(formatter: ABNumberFormatter(minimumDecimalPlaces: minimumDecimalPlaces, maximumDecimalPlaces: maximumDecimalPlaces));
+                    self.rightAxis.valueFormatter = DefaultAxisValueFormatter(formatter: ABNumberFormatter(minimumDecimalPlaces: minimumDecimalPlaces, maximumDecimalPlaces: maximumDecimalPlaces));
                     break;
                 default:
-                    self.leftAxis.valueFormatter = NumberFormatter();
-                    self.rightAxis.valueFormatter = NumberFormatter();
+                    self.leftAxis.valueFormatter = DefaultAxisValueFormatter(formatter: NumberFormatter());
+                    self.rightAxis.valueFormatter = DefaultAxisValueFormatter(formatter: NumberFormatter());
                 }
             }
 
@@ -670,62 +672,62 @@ extension BarLineChartViewBase {
                 switch(json["valueFormatter"]["numberStyle"]) {
                 case "CurrencyAccountingStyle":
                     if #available(iOS 9.0, *) {
-                        self.leftAxis.valueFormatter?.numberStyle = .currencyAccounting;
-                        self.rightAxis.valueFormatter?.numberStyle = .currencyAccounting;
+                        (self.leftAxis.valueFormatter as! DefaultAxisValueFormatter).formatter?.numberStyle = .currencyAccounting;
+                        (self.rightAxis.valueFormatter as! DefaultAxisValueFormatter).formatter?.numberStyle = .currencyAccounting;
                     }
                     break;
                 case "CurrencyISOCodeStyle":
                     if #available(iOS 9.0, *) {
-                        self.leftAxis.valueFormatter?.numberStyle = .currencyISOCode;
-                        self.rightAxis.valueFormatter?.numberStyle = .currencyISOCode;
+                        (self.leftAxis.valueFormatter as! DefaultAxisValueFormatter).formatter?.numberStyle = .currencyISOCode;
+                        (self.rightAxis.valueFormatter as! DefaultAxisValueFormatter).formatter?.numberStyle = .currencyISOCode;
                     }
                     break;
                 case "CurrencyPluralStyle":
                     if #available(iOS 9.0, *) {
-                        self.leftAxis.valueFormatter?.numberStyle = .currencyPlural;
-                        self.rightAxis.valueFormatter?.numberStyle = .currencyPlural;
+                        (self.leftAxis.valueFormatter as! DefaultAxisValueFormatter).formatter?.numberStyle = .currencyPlural;
+                        (self.rightAxis.valueFormatter as! DefaultAxisValueFormatter).formatter?.numberStyle = .currencyPlural;
                     }
                     break;
                 case "CurrencyStyle":
-                    self.leftAxis.valueFormatter?.numberStyle = .currency;
-                    self.rightAxis.valueFormatter?.numberStyle = .currency;
+                    (self.leftAxis.valueFormatter as! DefaultAxisValueFormatter).formatter?.numberStyle = .currency;
+                    (self.rightAxis.valueFormatter as! DefaultAxisValueFormatter).formatter?.numberStyle = .currency;
                     break;
                 case "DecimalStyle":
-                    self.leftAxis.valueFormatter?.numberStyle = .decimal;
-                    self.rightAxis.valueFormatter?.numberStyle = .decimal;
+                    (self.leftAxis.valueFormatter as! DefaultAxisValueFormatter).formatter?.numberStyle = .decimal;
+                    (self.rightAxis.valueFormatter as! DefaultAxisValueFormatter).formatter?.numberStyle = .decimal;
                     break;
                 case "NoStyle":
-                    self.leftAxis.valueFormatter?.numberStyle = .none;
-                    self.rightAxis.valueFormatter?.numberStyle = .none;
+                    (self.leftAxis.valueFormatter as! DefaultAxisValueFormatter).formatter?.numberStyle = .none;
+                    (self.rightAxis.valueFormatter as! DefaultAxisValueFormatter).formatter?.numberStyle = .none;
                     break;
                 case "OrdinalStyle":
                     if #available(iOS 9.0, *) {
-                        self.leftAxis.valueFormatter?.numberStyle = .ordinal;
-                        self.rightAxis.valueFormatter?.numberStyle = .ordinal;
+                        (self.leftAxis.valueFormatter as! DefaultAxisValueFormatter).formatter?.numberStyle = .ordinal;
+                        (self.rightAxis.valueFormatter as! DefaultAxisValueFormatter).formatter?.numberStyle = .ordinal;
                     }
                     break;
                 case "PercentStyle":
-                    self.leftAxis.valueFormatter?.numberStyle = .percent;
-                    self.rightAxis.valueFormatter?.numberStyle = .percent;
+                    (self.leftAxis.valueFormatter as! DefaultAxisValueFormatter).formatter?.numberStyle = .percent;
+                    (self.rightAxis.valueFormatter as! DefaultAxisValueFormatter).formatter?.numberStyle = .percent;
                     break;
                 case "ScientificStyle":
-                    self.leftAxis.valueFormatter?.numberStyle = .scientific;
-                    self.rightAxis.valueFormatter?.numberStyle = .scientific;
+                    (self.leftAxis.valueFormatter as! DefaultAxisValueFormatter).formatter?.numberStyle = .scientific;
+                    (self.rightAxis.valueFormatter as! DefaultAxisValueFormatter).formatter?.numberStyle = .scientific;
                     break;
                 case "SpellOutStyle":
-                    self.leftAxis.valueFormatter?.numberStyle = .spellOut;
-                    self.rightAxis.valueFormatter?.numberStyle = .spellOut;
+                    (self.leftAxis.valueFormatter as! DefaultAxisValueFormatter).formatter?.numberStyle = .spellOut;
+                    (self.rightAxis.valueFormatter as! DefaultAxisValueFormatter).formatter?.numberStyle = .spellOut;
                     break;
                 default:
-                    self.leftAxis.valueFormatter?.numberStyle = .none;
-                    self.rightAxis.valueFormatter?.numberStyle = .none;
+                    (self.leftAxis.valueFormatter as! DefaultAxisValueFormatter).formatter?.numberStyle = .none;
+                    (self.rightAxis.valueFormatter as! DefaultAxisValueFormatter).formatter?.numberStyle = .none;
                 }
             }
 
-            self.leftAxis.valueFormatter?.minimumFractionDigits = minimumDecimalPlaces;
-            self.rightAxis.valueFormatter?.minimumFractionDigits = minimumDecimalPlaces;
-            self.leftAxis.valueFormatter?.maximumFractionDigits = maximumDecimalPlaces;
-            self.rightAxis.valueFormatter?.maximumFractionDigits = maximumDecimalPlaces;
+            (self.leftAxis.valueFormatter as! DefaultAxisValueFormatter).formatter?.minimumFractionDigits = minimumDecimalPlaces;
+            (self.rightAxis.valueFormatter as! DefaultAxisValueFormatter).formatter?.minimumFractionDigits = minimumDecimalPlaces;
+            (self.leftAxis.valueFormatter as! DefaultAxisValueFormatter).formatter?.maximumFractionDigits = maximumDecimalPlaces;
+            (self.rightAxis.valueFormatter as! DefaultAxisValueFormatter).formatter?.maximumFractionDigits = maximumDecimalPlaces;
         }
         
         if json["viewport"].exists() {

@@ -18,7 +18,7 @@ func getLineData(_ labels: [String], json: JSON!) -> LineChartData {
     if !json["dataSets"].exists() {
         return LineChartData();
     }
-
+  
     let dataSets = json["dataSets"].arrayObject;
     var sets: [LineChartDataSet] = [];
 
@@ -30,11 +30,11 @@ func getLineData(_ labels: [String], json: JSON!) -> LineChartData {
             var dataEntries: [ChartDataEntry] = [];
 
             for i in 0..<values.count {
-                let dataEntry = ChartDataEntry(value: values[i], xIndex: i);
+                let dataEntry = ChartDataEntry(x: Double(i), y: values[i]);
                 dataEntries.append(dataEntry);
             }
 
-            let dataSet = LineChartDataSet(yVals: dataEntries, label: label);
+            let dataSet = LineChartDataSet(values: dataEntries, label: label);
 
             if tmp["colors"].exists() {
                 let arrColors = tmp["colors"].arrayValue.map({$0.intValue});
@@ -165,13 +165,13 @@ func getLineData(_ labels: [String], json: JSON!) -> LineChartData {
                 if json["valueFormatter"]["type"].exists() {
                     switch(json["valueFormatter"]["type"]) {
                     case "regular":
-                        dataSet.valueFormatter = NumberFormatter();
+                        dataSet.valueFormatter = DefaultValueFormatter(formatter: NumberFormatter());
                         break;
                     case "abbreviated":
-                        dataSet.valueFormatter = ABNumberFormatter(minimumDecimalPlaces: minimumDecimalPlaces, maximumDecimalPlaces: maximumDecimalPlaces);
+                        dataSet.valueFormatter = DefaultValueFormatter(formatter: ABNumberFormatter(minimumDecimalPlaces: minimumDecimalPlaces, maximumDecimalPlaces: maximumDecimalPlaces));
                         break;
                     default:
-                        dataSet.valueFormatter = NumberFormatter();
+                        dataSet.valueFormatter = DefaultValueFormatter(formatter: NumberFormatter());
                     }
                 }
 
@@ -179,55 +179,55 @@ func getLineData(_ labels: [String], json: JSON!) -> LineChartData {
                     switch(json["valueFormatter"]["numberStyle"]) {
                     case "CurrencyAccountingStyle":
                         if #available(iOS 9.0, *) {
-                            dataSet.valueFormatter?.numberStyle = .currencyAccounting;
+                            (dataSet.valueFormatter as! DefaultValueFormatter).formatter?.numberStyle = .currencyAccounting;
                         }
                         break;
                     case "CurrencyISOCodeStyle":
                         if #available(iOS 9.0, *) {
-                            dataSet.valueFormatter?.numberStyle = .currencyISOCode;
+                            (dataSet.valueFormatter as! DefaultValueFormatter).formatter?.numberStyle = .currencyISOCode;
                         }
                         break;
                     case "CurrencyPluralStyle":
                         if #available(iOS 9.0, *) {
-                            dataSet.valueFormatter?.numberStyle = .currencyPlural;
+                            (dataSet.valueFormatter as! DefaultValueFormatter).formatter?.numberStyle = .currencyPlural;
                         }
                         break;
                     case "CurrencyStyle":
-                        dataSet.valueFormatter?.numberStyle = .currency;
+                        (dataSet.valueFormatter as! DefaultValueFormatter).formatter?.numberStyle = .currency;
                         break;
                     case "DecimalStyle":
-                        dataSet.valueFormatter?.numberStyle = .decimal;
+                        (dataSet.valueFormatter as! DefaultValueFormatter).formatter?.numberStyle = .decimal;
                         break;
                     case "NoStyle":
-                        dataSet.valueFormatter?.numberStyle = .none;
+                        (dataSet.valueFormatter as! DefaultValueFormatter).formatter?.numberStyle = .none;
                         break;
                     case "OrdinalStyle":
                         if #available(iOS 9.0, *) {
-                            dataSet.valueFormatter?.numberStyle = .ordinal;
+                            (dataSet.valueFormatter as! DefaultValueFormatter).formatter?.numberStyle = .ordinal;
                         }
                         break;
                     case "PercentStyle":
-                        dataSet.valueFormatter?.numberStyle = .percent;
+                        (dataSet.valueFormatter as! DefaultValueFormatter).formatter?.numberStyle = .percent;
                         break;
                     case "ScientificStyle":
-                        dataSet.valueFormatter?.numberStyle = .scientific;
+                        (dataSet.valueFormatter as! DefaultValueFormatter).formatter?.numberStyle = .scientific;
                         break;
                     case "SpellOutStyle":
-                        dataSet.valueFormatter?.numberStyle = .spellOut;
+                        (dataSet.valueFormatter as! DefaultValueFormatter).formatter?.numberStyle = .spellOut;
                         break;
                     default:
-                        dataSet.valueFormatter?.numberStyle = .none;
+                        (dataSet.valueFormatter as! DefaultValueFormatter).formatter?.numberStyle = .none;
                     }
                 }
 
-                dataSet.valueFormatter?.minimumFractionDigits = minimumDecimalPlaces;
-                dataSet.valueFormatter?.maximumFractionDigits = maximumDecimalPlaces;
+                (dataSet.valueFormatter as! DefaultValueFormatter).formatter?.minimumFractionDigits = minimumDecimalPlaces;
+                (dataSet.valueFormatter as! DefaultValueFormatter).formatter?.maximumFractionDigits = maximumDecimalPlaces;
             }
 
             sets.append(dataSet);
         }
     }
-    return LineChartData(xVals: labels, dataSets: sets);
+    return LineChartData(dataSets: sets);
 }
 
 
@@ -247,19 +247,16 @@ func getBarData(_ labels: [String], json: JSON!) -> BarChartData {
             var dataEntries: [BarChartDataEntry] = [];
 
             for i in 0..<values.count {
-                let dataEntry = BarChartDataEntry(value: values[i], xIndex: i);
+                let dataEntry = BarChartDataEntry(x: values[i], y: Double(i));
                 dataEntries.append(dataEntry);
             }
 
-            let dataSet = BarChartDataSet(yVals: dataEntries, label: label);
+            let dataSet = BarChartDataSet(values: dataEntries, label: label);
 
             if tmp["barShadowColor"].exists() {
                 dataSet.barShadowColor = RCTConvert.uiColor(tmp["barShadowColor"].intValue);
             }
 
-            if tmp["barSpace"].exists() {
-                dataSet.barSpace = CGFloat(tmp["barSpace"].floatValue);
-            }
 
             if tmp["highlightAlpha"].exists() {
                 dataSet.highlightAlpha = CGFloat(tmp["highlightAlpha"].floatValue);
@@ -333,13 +330,13 @@ func getBarData(_ labels: [String], json: JSON!) -> BarChartData {
                 if json["valueFormatter"]["type"].exists() {
                     switch(json["valueFormatter"]["type"]) {
                     case "regular":
-                        dataSet.valueFormatter = NumberFormatter();
+                        dataSet.valueFormatter = DefaultValueFormatter(formatter: NumberFormatter());
                         break;
                     case "abbreviated":
-                        dataSet.valueFormatter = ABNumberFormatter(minimumDecimalPlaces: minimumDecimalPlaces, maximumDecimalPlaces: maximumDecimalPlaces);
+                        dataSet.valueFormatter = DefaultValueFormatter(formatter: ABNumberFormatter(minimumDecimalPlaces: minimumDecimalPlaces, maximumDecimalPlaces: maximumDecimalPlaces));
                         break;
                     default:
-                        dataSet.valueFormatter = NumberFormatter();
+                        dataSet.valueFormatter = DefaultValueFormatter(formatter: NumberFormatter());
                     }
                 }
 
@@ -347,55 +344,55 @@ func getBarData(_ labels: [String], json: JSON!) -> BarChartData {
                     switch(json["valueFormatter"]["numberStyle"]) {
                     case "CurrencyAccountingStyle":
                         if #available(iOS 9.0, *) {
-                            dataSet.valueFormatter?.numberStyle = .currencyAccounting;
+                            (dataSet.valueFormatter as! DefaultValueFormatter).formatter?.numberStyle = .currencyAccounting;
                         }
                         break;
                     case "CurrencyISOCodeStyle":
                         if #available(iOS 9.0, *) {
-                            dataSet.valueFormatter?.numberStyle = .currencyISOCode;
+                            (dataSet.valueFormatter as! DefaultValueFormatter).formatter?.numberStyle = .currencyISOCode;
                         }
                         break;
                     case "CurrencyPluralStyle":
                         if #available(iOS 9.0, *) {
-                            dataSet.valueFormatter?.numberStyle = .currencyPlural;
+                            (dataSet.valueFormatter as! DefaultValueFormatter).formatter?.numberStyle = .currencyPlural;
                         }
                         break;
                     case "CurrencyStyle":
-                        dataSet.valueFormatter?.numberStyle = .currency;
+                        (dataSet.valueFormatter as! DefaultValueFormatter).formatter?.numberStyle = .currency;
                         break;
                     case "DecimalStyle":
-                        dataSet.valueFormatter?.numberStyle = .decimal;
+                        (dataSet.valueFormatter as! DefaultValueFormatter).formatter?.numberStyle = .decimal;
                         break;
                     case "NoStyle":
-                        dataSet.valueFormatter?.numberStyle = .none;
+                        (dataSet.valueFormatter as! DefaultValueFormatter).formatter?.numberStyle = .none;
                         break;
                     case "OrdinalStyle":
                         if #available(iOS 9.0, *) {
-                            dataSet.valueFormatter?.numberStyle = .ordinal;
+                            (dataSet.valueFormatter as! DefaultValueFormatter).formatter?.numberStyle = .ordinal;
                         }
                         break;
                     case "PercentStyle":
-                        dataSet.valueFormatter?.numberStyle = .percent;
+                        (dataSet.valueFormatter as! DefaultValueFormatter).formatter?.numberStyle = .percent;
                         break;
                     case "ScientificStyle":
-                        dataSet.valueFormatter?.numberStyle = .scientific;
+                        (dataSet.valueFormatter as! DefaultValueFormatter).formatter?.numberStyle = .scientific;
                         break;
                     case "SpellOutStyle":
-                        dataSet.valueFormatter?.numberStyle = .spellOut;
+                        (dataSet.valueFormatter as! DefaultValueFormatter).formatter?.numberStyle = .spellOut;
                         break;
                     default:
-                        dataSet.valueFormatter?.numberStyle = .none;
+                        (dataSet.valueFormatter as! DefaultValueFormatter).formatter?.numberStyle = .none;
                     }
                 }
 
-                dataSet.valueFormatter?.minimumFractionDigits = minimumDecimalPlaces;
-                dataSet.valueFormatter?.maximumFractionDigits = maximumDecimalPlaces;
+                (dataSet.valueFormatter as! DefaultValueFormatter).formatter?.minimumFractionDigits = minimumDecimalPlaces;
+                (dataSet.valueFormatter as! DefaultValueFormatter).formatter?.maximumFractionDigits = maximumDecimalPlaces;
             }
 
             sets.append(dataSet);
         }
     }
-    return BarChartData(xVals: labels, dataSets: sets);
+    return BarChartData(dataSets: sets);
 }
 
 
@@ -418,14 +415,14 @@ func getBubbleData(_ labels: [String], json: JSON!) -> BubbleChartData {
             for i in 0..<values.count {
                 let object = JSON(values[i]);
                 let dataEntry = BubbleChartDataEntry(
-                    xIndex: i,
-                    value: object["value"].doubleValue,
+                    x: object["value"].doubleValue,
+                    y: Double(i),
                     size: CGFloat(object["size"].floatValue)
                 );
                 dataEntries.append(dataEntry);
             }
 
-            let dataSet = BubbleChartDataSet(yVals: dataEntries, label: label);
+            let dataSet = BubbleChartDataSet(values: dataEntries, label: label);
 
             if tmp["colors"].exists() {
                 let arrColors = tmp["colors"].arrayValue.map({$0.intValue});
@@ -479,69 +476,69 @@ func getBubbleData(_ labels: [String], json: JSON!) -> BubbleChartData {
                 if json["valueFormatter"]["type"].exists() {
                     switch(json["valueFormatter"]["type"]) {
                     case "regular":
-                        dataSet.valueFormatter = NumberFormatter();
-                        break;
+                      dataSet.valueFormatter = DefaultValueFormatter(formatter: NumberFormatter());
+                      break;
                     case "abbreviated":
-                        dataSet.valueFormatter = ABNumberFormatter(minimumDecimalPlaces: minimumDecimalPlaces, maximumDecimalPlaces: maximumDecimalPlaces);
-                        break;
+                      dataSet.valueFormatter = DefaultValueFormatter(formatter: ABNumberFormatter(minimumDecimalPlaces: minimumDecimalPlaces, maximumDecimalPlaces: maximumDecimalPlaces));
+                      break;
                     default:
-                        dataSet.valueFormatter = NumberFormatter();
-                    }
+                      dataSet.valueFormatter = DefaultValueFormatter(formatter: NumberFormatter());
+                  }
                 }
 
                 if json["valueFormatter"]["numberStyle"].exists() {
                     switch(json["valueFormatter"]["numberStyle"]) {
                     case "CurrencyAccountingStyle":
                         if #available(iOS 9.0, *) {
-                            dataSet.valueFormatter?.numberStyle = .currencyAccounting;
+                            (dataSet.valueFormatter as! DefaultValueFormatter).formatter?.numberStyle = .currencyAccounting;
                         }
                         break;
                     case "CurrencyISOCodeStyle":
                         if #available(iOS 9.0, *) {
-                            dataSet.valueFormatter?.numberStyle = .currencyISOCode;
+                            (dataSet.valueFormatter as! DefaultValueFormatter).formatter?.numberStyle = .currencyISOCode;
                         }
                         break;
                     case "CurrencyPluralStyle":
                         if #available(iOS 9.0, *) {
-                            dataSet.valueFormatter?.numberStyle = .currencyPlural;
+                            (dataSet.valueFormatter as! DefaultValueFormatter).formatter?.numberStyle = .currencyPlural;
                         }
                         break;
                     case "CurrencyStyle":
-                        dataSet.valueFormatter?.numberStyle = .currency;
+                        (dataSet.valueFormatter as! DefaultValueFormatter).formatter?.numberStyle = .currency;
                         break;
                     case "DecimalStyle":
-                        dataSet.valueFormatter?.numberStyle = .decimal;
+                        (dataSet.valueFormatter as! DefaultValueFormatter).formatter?.numberStyle = .decimal;
                         break;
                     case "NoStyle":
-                        dataSet.valueFormatter?.numberStyle = .none;
+                        (dataSet.valueFormatter as! DefaultValueFormatter).formatter?.numberStyle = .none;
                         break;
                     case "OrdinalStyle":
                         if #available(iOS 9.0, *) {
-                            dataSet.valueFormatter?.numberStyle = .ordinal;
+                            (dataSet.valueFormatter as! DefaultValueFormatter).formatter?.numberStyle = .ordinal;
                         }
                         break;
                     case "PercentStyle":
-                        dataSet.valueFormatter?.numberStyle = .percent;
+                        (dataSet.valueFormatter as! DefaultValueFormatter).formatter?.numberStyle = .percent;
                         break;
                     case "ScientificStyle":
-                        dataSet.valueFormatter?.numberStyle = .scientific;
+                        (dataSet.valueFormatter as! DefaultValueFormatter).formatter?.numberStyle = .scientific;
                         break;
                     case "SpellOutStyle":
-                        dataSet.valueFormatter?.numberStyle = .spellOut;
+                        (dataSet.valueFormatter as! DefaultValueFormatter).formatter?.numberStyle = .spellOut;
                         break;
                     default:
-                        dataSet.valueFormatter?.numberStyle = .none;
+                        (dataSet.valueFormatter as! DefaultValueFormatter).formatter?.numberStyle = .none;
                     }
                 }
 
-                dataSet.valueFormatter?.minimumFractionDigits = minimumDecimalPlaces;
-                dataSet.valueFormatter?.maximumFractionDigits = maximumDecimalPlaces;
+                (dataSet.valueFormatter as! DefaultValueFormatter).formatter?.minimumFractionDigits = minimumDecimalPlaces;
+                (dataSet.valueFormatter as! DefaultValueFormatter).formatter?.maximumFractionDigits = maximumDecimalPlaces;
             }
 
             sets.append(dataSet);
         }
     }
-    return BubbleChartData(xVals: labels, dataSets: sets);
+    return BubbleChartData(dataSets: sets);
 }
 
 func getScatterData(_ labels: [String], json: JSON!) -> ScatterChartData {
@@ -561,11 +558,11 @@ func getScatterData(_ labels: [String], json: JSON!) -> ScatterChartData {
             var dataEntries: [ChartDataEntry] = [];
 
             for i in 0..<values.count {
-                let dataEntry = ChartDataEntry(value: values[i], xIndex: i);
+                let dataEntry = ChartDataEntry(x: values[i], y: Double(i));
                 dataEntries.append(dataEntry);
             }
 
-            let dataSet = ScatterChartDataSet(yVals: dataEntries, label: label);
+            let dataSet = ScatterChartDataSet(values: dataEntries, label: label);
 
             if tmp["colors"].exists() {
                 let arrColors = tmp["colors"].arrayValue.map({$0.intValue});
@@ -595,22 +592,22 @@ func getScatterData(_ labels: [String], json: JSON!) -> ScatterChartData {
             if tmp["scatterShape"].exists() {
                 switch(tmp["scatterShape"]) {
                 case "Square":
-                    dataSet.scatterShape = .square;
+                    dataSet.setScatterShape(.square);
                     break;
                 case "Circle":
-                    dataSet.scatterShape = .circle;
+                    dataSet.setScatterShape(.circle);
                     break;
                 case "Triangle":
-                    dataSet.scatterShape = .triangle;
+                    dataSet.setScatterShape(.triangle);
                     break;
                 case "Cross":
-                    dataSet.scatterShape = .cross;
+                    dataSet.setScatterShape(.cross);
                     break;
                 case "X":
-                    dataSet.scatterShape = .x;
+                    dataSet.setScatterShape(.x);
                     break;
                 default:
-                    dataSet.scatterShape = .square;
+                    dataSet.setScatterShape(.square);
                     break;
                 }
             }
@@ -648,71 +645,71 @@ func getScatterData(_ labels: [String], json: JSON!) -> ScatterChartData {
                 }
 
                 if json["valueFormatter"]["type"].exists() {
-                    switch(json["valueFormatter"]["type"]) {
-                    case "regular":
-                        dataSet.valueFormatter = NumberFormatter();
-                        break;
-                    case "abbreviated":
-                        dataSet.valueFormatter = ABNumberFormatter(minimumDecimalPlaces: minimumDecimalPlaces, maximumDecimalPlaces: maximumDecimalPlaces);
-                        break;
-                    default:
-                        dataSet.valueFormatter = NumberFormatter();
-                    }
+                  switch(json["valueFormatter"]["type"]) {
+                  case "regular":
+                    dataSet.valueFormatter = DefaultValueFormatter(formatter: NumberFormatter());
+                    break;
+                  case "abbreviated":
+                    dataSet.valueFormatter = DefaultValueFormatter(formatter: ABNumberFormatter(minimumDecimalPlaces: minimumDecimalPlaces, maximumDecimalPlaces: maximumDecimalPlaces));
+                    break;
+                  default:
+                    dataSet.valueFormatter = DefaultValueFormatter(formatter: NumberFormatter());
+                  }
                 }
 
                 if json["valueFormatter"]["numberStyle"].exists() {
                     switch(json["valueFormatter"]["numberStyle"]) {
                     case "CurrencyAccountingStyle":
                         if #available(iOS 9.0, *) {
-                            dataSet.valueFormatter?.numberStyle = .currencyAccounting;
+                            (dataSet.valueFormatter as! DefaultValueFormatter).formatter?.numberStyle = .currencyAccounting;
                         }
                         break;
                     case "CurrencyISOCodeStyle":
                         if #available(iOS 9.0, *) {
-                            dataSet.valueFormatter?.numberStyle = .currencyISOCode;
+                            (dataSet.valueFormatter as! DefaultValueFormatter).formatter?.numberStyle = .currencyISOCode;
                         }
                         break;
                     case "CurrencyPluralStyle":
                         if #available(iOS 9.0, *) {
-                            dataSet.valueFormatter?.numberStyle = .currencyPlural;
+                            (dataSet.valueFormatter as! DefaultValueFormatter).formatter?.numberStyle = .currencyPlural;
                         }
                         break;
                     case "CurrencyStyle":
-                        dataSet.valueFormatter?.numberStyle = .currency;
+                        (dataSet.valueFormatter as! DefaultValueFormatter).formatter?.numberStyle = .currency;
                         break;
                     case "DecimalStyle":
-                        dataSet.valueFormatter?.numberStyle = .decimal;
+                        (dataSet.valueFormatter as! DefaultValueFormatter).formatter?.numberStyle = .decimal;
                         break;
                     case "NoStyle":
-                        dataSet.valueFormatter?.numberStyle = .none;
+                        (dataSet.valueFormatter as! DefaultValueFormatter).formatter?.numberStyle = .none;
                         break;
                     case "OrdinalStyle":
                         if #available(iOS 9.0, *) {
-                            dataSet.valueFormatter?.numberStyle = .ordinal;
+                            (dataSet.valueFormatter as! DefaultValueFormatter).formatter?.numberStyle = .ordinal;
                         }
                         break;
                     case "PercentStyle":
-                        dataSet.valueFormatter?.numberStyle = .percent;
+                        (dataSet.valueFormatter as! DefaultValueFormatter).formatter?.numberStyle = .percent;
                         break;
                     case "ScientificStyle":
-                        dataSet.valueFormatter?.numberStyle = .scientific;
+                        (dataSet.valueFormatter as! DefaultValueFormatter).formatter?.numberStyle = .scientific;
                         break;
                     case "SpellOutStyle":
-                        dataSet.valueFormatter?.numberStyle = .spellOut;
+                        (dataSet.valueFormatter as! DefaultValueFormatter).formatter?.numberStyle = .spellOut;
                         break;
                     default:
-                        dataSet.valueFormatter?.numberStyle = .none;
+                        (dataSet.valueFormatter as! DefaultValueFormatter).formatter?.numberStyle = .none;
                     }
                 }
 
-                dataSet.valueFormatter?.minimumFractionDigits = minimumDecimalPlaces;
-                dataSet.valueFormatter?.maximumFractionDigits = maximumDecimalPlaces;
+                (dataSet.valueFormatter as! DefaultValueFormatter).formatter?.minimumFractionDigits = minimumDecimalPlaces;
+                (dataSet.valueFormatter as! DefaultValueFormatter).formatter?.maximumFractionDigits = maximumDecimalPlaces;
             }
 
             sets.append(dataSet);
         }
     }
-    return ScatterChartData(xVals: labels, dataSets: sets);
+    return ScatterChartData(dataSets: sets);
 }
 
 func getCandleStickData(_ labels: [String], json: JSON!) -> CandleChartData {
@@ -734,7 +731,7 @@ func getCandleStickData(_ labels: [String], json: JSON!) -> CandleChartData {
             for i in 0..<values.count {
                 let object = JSON(values[i]);
                 let dataEntry = CandleChartDataEntry(
-                    xIndex: i,
+                    x: Double(i),
                     shadowH: object["shadowH"].doubleValue,
                     shadowL: object["shadowL"].doubleValue,
                     open: object["open"].doubleValue,
@@ -743,7 +740,7 @@ func getCandleStickData(_ labels: [String], json: JSON!) -> CandleChartData {
                 dataEntries.append(dataEntry);
             }
 
-            let dataSet = CandleChartDataSet(yVals: dataEntries, label: label);
+            let dataSet = CandleChartDataSet(values: dataEntries, label: label);
 
             if tmp["colors"].exists() {
                 let arrColors = tmp["colors"].arrayValue.map({$0.intValue});
@@ -831,69 +828,69 @@ func getCandleStickData(_ labels: [String], json: JSON!) -> CandleChartData {
                 }
 
                 if json["valueFormatter"]["type"].exists() {
-                    switch(json["valueFormatter"]["type"]) {
-                    case "regular":
-                        dataSet.valueFormatter = NumberFormatter();
-                        break;
-                    case "abbreviated":
-                        dataSet.valueFormatter = ABNumberFormatter(minimumDecimalPlaces: minimumDecimalPlaces, maximumDecimalPlaces: maximumDecimalPlaces);
-                        break;
-                    default:
-                        dataSet.valueFormatter = NumberFormatter();
-                    }
+                  switch(json["valueFormatter"]["type"]) {
+                  case "regular":
+                    dataSet.valueFormatter = DefaultValueFormatter(formatter: NumberFormatter());
+                    break;
+                  case "abbreviated":
+                    dataSet.valueFormatter = DefaultValueFormatter(formatter: ABNumberFormatter(minimumDecimalPlaces: minimumDecimalPlaces, maximumDecimalPlaces: maximumDecimalPlaces));
+                    break;
+                  default:
+                    dataSet.valueFormatter = DefaultValueFormatter(formatter: NumberFormatter());
+                  }
                 }
 
                 if json["valueFormatter"]["numberStyle"].exists() {
                     switch(json["valueFormatter"]["numberStyle"]) {
                     case "CurrencyAccountingStyle":
                         if #available(iOS 9.0, *) {
-                            dataSet.valueFormatter?.numberStyle = .currencyAccounting;
+                            (dataSet.valueFormatter as! DefaultValueFormatter).formatter?.numberStyle = .currencyAccounting;
                         }
                         break;
                     case "CurrencyISOCodeStyle":
                         if #available(iOS 9.0, *) {
-                            dataSet.valueFormatter?.numberStyle = .currencyISOCode;
+                            (dataSet.valueFormatter as! DefaultValueFormatter).formatter?.numberStyle = .currencyISOCode;
                         }
                         break;
                     case "CurrencyPluralStyle":
                         if #available(iOS 9.0, *) {
-                            dataSet.valueFormatter?.numberStyle = .currencyPlural;
+                            (dataSet.valueFormatter as! DefaultValueFormatter).formatter?.numberStyle = .currencyPlural;
                         }
                         break;
                     case "CurrencyStyle":
-                        dataSet.valueFormatter?.numberStyle = .currency;
+                        (dataSet.valueFormatter as! DefaultValueFormatter).formatter?.numberStyle = .currency;
                         break;
                     case "DecimalStyle":
-                        dataSet.valueFormatter?.numberStyle = .decimal;
+                        (dataSet.valueFormatter as! DefaultValueFormatter).formatter?.numberStyle = .decimal;
                         break;
                     case "NoStyle":
-                        dataSet.valueFormatter?.numberStyle = .none;
+                        (dataSet.valueFormatter as! DefaultValueFormatter).formatter?.numberStyle = .none;
                         break;
                     case "OrdinalStyle":
                         if #available(iOS 9.0, *) {
-                            dataSet.valueFormatter?.numberStyle = .ordinal;
+                            (dataSet.valueFormatter as! DefaultValueFormatter).formatter?.numberStyle = .ordinal;
                         }
                         break;
                     case "PercentStyle":
-                        dataSet.valueFormatter?.numberStyle = .percent;
+                        (dataSet.valueFormatter as! DefaultValueFormatter).formatter?.numberStyle = .percent;
                         break;
                     case "ScientificStyle":
-                        dataSet.valueFormatter?.numberStyle = .scientific;
+                        (dataSet.valueFormatter as! DefaultValueFormatter).formatter?.numberStyle = .scientific;
                         break;
                     case "SpellOutStyle":
-                        dataSet.valueFormatter?.numberStyle = .spellOut;
+                        (dataSet.valueFormatter as! DefaultValueFormatter).formatter?.numberStyle = .spellOut;
                         break;
                     default:
-                        dataSet.valueFormatter?.numberStyle = .none;
+                        (dataSet.valueFormatter as! DefaultValueFormatter).formatter?.numberStyle = .none;
                     }
                 }
 
-                dataSet.valueFormatter?.minimumFractionDigits = minimumDecimalPlaces;
-                dataSet.valueFormatter?.maximumFractionDigits = maximumDecimalPlaces;
+                (dataSet.valueFormatter as! DefaultValueFormatter).formatter?.minimumFractionDigits = minimumDecimalPlaces;
+                (dataSet.valueFormatter as! DefaultValueFormatter).formatter?.maximumFractionDigits = maximumDecimalPlaces;
             }
 
             sets.append(dataSet);
         }
     }
-    return CandleChartData(xVals: labels, dataSets: sets);
+    return CandleChartData(dataSets: sets);
 }

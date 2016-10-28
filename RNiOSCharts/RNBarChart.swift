@@ -42,10 +42,6 @@ class RNBarChart : BarChartView {
             self.drawValueAboveBarEnabled = json["drawValueAboveBar"].boolValue;
         }
         
-        if json["drawHighlightArrow"].exists() {
-            self.drawHighlightArrowEnabled = json["drawHighlightArrow"].boolValue;
-        }
-        
         if json["drawBarShadow"].exists() {
             self.drawBarShadowEnabled = json["drawBarShadow"].boolValue;
         }

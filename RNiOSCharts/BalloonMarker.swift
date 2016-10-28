@@ -15,7 +15,7 @@
 import Foundation;
 import Charts;
 
-public class BalloonMarker: ChartMarker
+public class BalloonMarker: MarkerView
 {
     public var color: UIColor?
     public var arrowSize = CGSize(width: 15, height: 11)
@@ -32,20 +32,22 @@ public class BalloonMarker: ChartMarker
     
     public init(color: UIColor, font: UIFont, textColor: UIColor, insets: UIEdgeInsets)
     {
-        super.init()
-        
+        super.init(frame: CGRect(x: 0, y: 0, width: 0, height: 0))
+          
         self.color = color
         self.font = font
         self.textColor = textColor
         self.insets = insets
-        
-        _paragraphStyle = NSParagraphStyle.defaultParagraphStyle().mutableCopy() as? NSMutableParagraphStyle
-        _paragraphStyle?.alignment = .Center
+      
+        _paragraphStyle = NSParagraphStyle.default.mutableCopy() as? NSMutableParagraphStyle
+        _paragraphStyle?.alignment = .center
     }
+  
+  required public init?(coder aDecoder: NSCoder) {
+    fatalError("init(coder:) has not been implemented")
+  }
     
-    public override var size: CGSize { return _size; }
-    
-    public override func draw(context context: CGContext, point: CGPoint)
+    public override func draw(context: CGContext, point: CGPoint)
     {
         if (labelns == nil)
         {
@@ -56,59 +58,42 @@ public class BalloonMarker: ChartMarker
         rect.origin.x -= _size.width / 2.0
         rect.origin.y -= _size.height
         
-        CGContextSaveGState(context)
+        context.saveGState()
         
-        CGContextSetFillColorWithColor(context, color?.CGColor)
-        CGContextBeginPath(context)
-        CGContextMoveToPoint(context,
-            rect.origin.x,
-            rect.origin.y)
-        CGContextAddLineToPoint(context,
-            rect.origin.x + rect.size.width,
-            rect.origin.y)
-        CGContextAddLineToPoint(context,
-            rect.origin.x + rect.size.width,
-            rect.origin.y + rect.size.height - arrowSize.height)
-        CGContextAddLineToPoint(context,
-            rect.origin.x + (rect.size.width + arrowSize.width) / 2.0,
-            rect.origin.y + rect.size.height - arrowSize.height)
-        CGContextAddLineToPoint(context,
-            rect.origin.x + rect.size.width / 2.0,
-            rect.origin.y + rect.size.height)
-        CGContextAddLineToPoint(context,
-            rect.origin.x + (rect.size.width - arrowSize.width) / 2.0,
-            rect.origin.y + rect.size.height - arrowSize.height)
-        CGContextAddLineToPoint(context,
-            rect.origin.x,
-            rect.origin.y + rect.size.height - arrowSize.height)
-        CGContextAddLineToPoint(context,
-            rect.origin.x,
-            rect.origin.y)
-        CGContextFillPath(context)
+        context.setFillColor((color?.cgColor)!)
+        context.beginPath()
+        context.move(to: CGPoint(x: rect.origin.x, y: rect.origin.y))
+        context.addLine(to: CGPoint(x: rect.origin.x + rect.size.width, y: rect.origin.y))
+        context.addLine(to: CGPoint(x: rect.origin.x + rect.size.width, y: rect.origin.y + rect.size.height - arrowSize.height))
+        context.addLine(to: CGPoint(x: rect.origin.x + (rect.size.width + arrowSize.width) / 2.0, y: rect.origin.y + rect.size.height - arrowSize.height))
+        context.addLine(to: CGPoint(x: rect.origin.x + rect.size.width / 2.0, y: rect.origin.y + rect.size.height))
+        context.addLine(to: CGPoint(x: rect.origin.x + (rect.size.width - arrowSize.width) / 2.0, y: rect.origin.y + rect.size.height - arrowSize.height))
+        context.addLine(to: CGPoint(x: rect.origin.x, y: rect.origin.y + rect.size.height - arrowSize.height))
+        context.addLine(to: CGPoint(x: rect.origin.x, y: rect.origin.y))
+        context.fillPath()
         
         rect.origin.y += self.insets.top
         rect.size.height -= self.insets.top + self.insets.bottom
         
         UIGraphicsPushContext(context)
-        
-        labelns?.drawInRect(rect, withAttributes: _drawAttributes)
+      
+        labelns?.draw(in: rect, withAttributes: _drawAttributes)
         
         UIGraphicsPopContext()
         
-        CGContextRestoreGState(context)
+        context.restoreGState()
     }
     
-    public override func refreshContent(entry entry: ChartDataEntry, highlight: ChartHighlight)
+    public override func refreshContent(entry: ChartDataEntry, highlight: Highlight)
     {
-        let label = entry.value.description
-        labelns = label as NSString
-        
+        labelns = entry.description as NSString;
+      
         _drawAttributes.removeAll()
         _drawAttributes[NSFontAttributeName] = self.font
         _drawAttributes[NSParagraphStyleAttributeName] = _paragraphStyle
         _drawAttributes[NSForegroundColorAttributeName] = self.textColor
         
-        _labelSize = labelns?.sizeWithAttributes(_drawAttributes) ?? CGSizeZero
+        _labelSize = labelns?.size(attributes: _drawAttributes) ?? CGSize.zero
         _size.width = _labelSize.width + self.insets.left + self.insets.right
         _size.height = _labelSize.height + self.insets.top + self.insets.bottom
         _size.width = max(minimumSize.width, _size.width)

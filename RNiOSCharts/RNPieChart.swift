@@ -6,6 +6,7 @@
 //  Copyright © 2016 Facebook. All rights reserved.
 //
 
+import Foundation
 import Charts
 import SwiftyJSON
 
@@ -90,11 +91,11 @@ class RNPieChart : PieChartView {
           var dataEntries: [ChartDataEntry] = [];
           
           for i in 0..<values.count {
-            let dataEntry = ChartDataEntry(value: values[i], xIndex: i);
+            let dataEntry = ChartDataEntry(x: Double(i), y: values[i]);
             dataEntries.append(dataEntry);
           }
           
-          let dataSet = PieChartDataSet(yVals: dataEntries, label: label);
+          let dataSet = PieChartDataSet(values: dataEntries, label: label);
           
           if tmp["sliceSpace"].exists() {
             dataSet.sliceSpace = CGFloat(tmp["sliceSpace"].floatValue);
@@ -206,7 +207,7 @@ class RNPieChart : PieChartView {
         }
       }
       
-      let chartData = PieChartData(xVals: labels, dataSets: sets);
+      let chartData = PieChartData(dataSets: sets);
       self.data = chartData;
     }
     

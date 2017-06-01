@@ -144,63 +144,63 @@ class RNPieChart : PieChartView {
             if json["valueFormatter"]["type"].exists() {
               switch(json["valueFormatter"]["type"]) {
               case "regular":
-                dataSet.valueFormatter = NumberFormatter();
-                break;
+                  dataSet.valueFormatter = DefaultValueFormatter(formatter: NumberFormatter());
+                  break;
               case "abbreviated":
-                dataSet.valueFormatter = ABNumberFormatter(minimumDecimalPlaces: minimumDecimalPlaces, maximumDecimalPlaces: maximumDecimalPlaces);
-                break;
+                  dataSet.valueFormatter = DefaultValueFormatter(formatter: ABNumberFormatter(minimumDecimalPlaces: minimumDecimalPlaces, maximumDecimalPlaces: maximumDecimalPlaces));
+                  break;
               default:
-                dataSet.valueFormatter = NumberFormatter();
+                  dataSet.valueFormatter = DefaultValueFormatter(formatter: NumberFormatter());
               }
             }
             
             if json["valueFormatter"]["numberStyle"].exists() {
               switch(json["valueFormatter"]["numberStyle"]) {
               case "CurrencyAccountingStyle":
-                if #available(iOS 9.0, *) {
-                  dataSet.valueFormatter?.numberStyle = .currencyAccounting;
-                }
-                break;
+                  if #available(iOS 9.0, *) {
+                      (dataSet.valueFormatter as! DefaultValueFormatter).formatter?.numberStyle = .currencyAccounting;
+                  }
+                  break;
               case "CurrencyISOCodeStyle":
-                if #available(iOS 9.0, *) {
-                  dataSet.valueFormatter?.numberStyle = .currencyISOCode;
-                }
-                break;
+                  if #available(iOS 9.0, *) {
+                      (dataSet.valueFormatter as! DefaultValueFormatter).formatter?.numberStyle = .currencyISOCode;
+                  }
+                  break;
               case "CurrencyPluralStyle":
-                if #available(iOS 9.0, *) {
-                  dataSet.valueFormatter?.numberStyle = .currencyPlural;
-                }
-                break;
+                  if #available(iOS 9.0, *) {
+                      (dataSet.valueFormatter as! DefaultValueFormatter).formatter?.numberStyle = .currencyPlural;
+                  }
+                  break;
               case "CurrencyStyle":
-                dataSet.valueFormatter?.numberStyle = .currency;
-                break;
+                  (dataSet.valueFormatter as! DefaultValueFormatter).formatter?.numberStyle = .currency;
+                  break;
               case "DecimalStyle":
-                dataSet.valueFormatter?.numberStyle = .decimal;
-                break;
+                  (dataSet.valueFormatter as! DefaultValueFormatter).formatter?.numberStyle = .decimal;
+                  break;
               case "NoStyle":
-                dataSet.valueFormatter?.numberStyle = .none;
-                break;
+                  (dataSet.valueFormatter as! DefaultValueFormatter).formatter?.numberStyle = .none;
+                  break;
               case "OrdinalStyle":
-                if #available(iOS 9.0, *) {
-                  dataSet.valueFormatter?.numberStyle = .ordinal;
-                }
-                break;
+                  if #available(iOS 9.0, *) {
+                      (dataSet.valueFormatter as! DefaultValueFormatter).formatter?.numberStyle = .ordinal;
+                  }
+                  break;
               case "PercentStyle":
-                dataSet.valueFormatter?.numberStyle = .percent;
-                break;
+                  (dataSet.valueFormatter as! DefaultValueFormatter).formatter?.numberStyle = .percent;
+                  break;
               case "ScientificStyle":
-                dataSet.valueFormatter?.numberStyle = .scientific;
-                break;
+                  (dataSet.valueFormatter as! DefaultValueFormatter).formatter?.numberStyle = .scientific;
+                  break;
               case "SpellOutStyle":
-                dataSet.valueFormatter?.numberStyle = .spellOut;
-                break;
+                  (dataSet.valueFormatter as! DefaultValueFormatter).formatter?.numberStyle = .spellOut;
+                  break;
               default:
-                dataSet.valueFormatter?.numberStyle = .none;
+                  (dataSet.valueFormatter as! DefaultValueFormatter).formatter?.numberStyle = .none;
               }
             }
             
-            dataSet.valueFormatter?.minimumFractionDigits = minimumDecimalPlaces;
-            dataSet.valueFormatter?.maximumFractionDigits = maximumDecimalPlaces;
+            (dataSet.valueFormatter as! DefaultValueFormatter).formatter?.minimumFractionDigits = minimumDecimalPlaces;
+            (dataSet.valueFormatter as! DefaultValueFormatter).formatter?.maximumFractionDigits = maximumDecimalPlaces;
           }
           
           sets.append(dataSet);
